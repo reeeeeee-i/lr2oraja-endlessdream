@@ -40,8 +40,8 @@ public final class OrajaHelperClient {
 		send(payload);
 	}
 
-	public static void sendPlayEnd(SongData song, ReplayData replay, Mode mode, int playedNotes, int totalNotes,
-			long elapsedSeconds, boolean quickRetry) {
+	public static void sendPlayEnd(SongData song, ReplayData replay, Mode mode, ScoreData score, int playedNotes,
+			int totalNotes, long elapsedSeconds, boolean quickRetry) {
 		Map<String, Object> payload = basePayload("song_play_end", "play", song);
 		addOption(payload, replay, mode);
 		payload.put("playEndMetrics", true);
@@ -49,6 +49,9 @@ public final class OrajaHelperClient {
 		payload.put("totalNotes", totalNotes);
 		payload.put("elapsedSeconds", elapsedSeconds);
 		payload.put("quickRetry", quickRetry);
+		if (score != null) {
+			payload.put("judges", judgePayload(score));
+		}
 		send(payload);
 	}
 

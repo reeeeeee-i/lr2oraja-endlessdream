@@ -968,7 +968,7 @@ public class BMSPlayer extends MainState {
 		int totalNotes = Math.max(0, model != null ? model.getTotalNotes() : resource.getSongdata().getNotes());
 		long elapsedSeconds = timer.isTimerOn(TIMER_PLAY) ? Math.max(0, timer.getNowTime(TIMER_PLAY) / 1000) : 0;
 		OrajaHelperClient.sendPlayEnd(resource.getSongdata(), playinfo, model != null ? model.getMode() : null,
-				playedNotes, totalNotes, elapsedSeconds, quickRetry);
+				judge.getScoreData(), playedNotes, totalNotes, elapsedSeconds, quickRetry);
 		playEndMetricsSent = true;
 	}
 
