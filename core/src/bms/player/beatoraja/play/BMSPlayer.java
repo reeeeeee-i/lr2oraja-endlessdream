@@ -101,6 +101,7 @@ public class BMSPlayer extends MainState {
 	private float adjustedVolume = -1.f;
 	private boolean analysisChecked = false;
 	private Future<BMSLoudnessAnalyzer.AnalysisResult> analysisTask;
+	private boolean playEndMetricsSent = false;
 
 	public BMSPlayer(MainController main, PlayerResource resource) {
 		super(main);
@@ -838,6 +839,7 @@ public class BMSPlayer extends MainState {
 				if ((input.startPressed() ^ input.isSelectPressed()) && resource.getCourseBMSModels() == null
 						&& autoplay.mode == BMSPlayerMode.Mode.PLAY) {
                     main.getAudioProcessor().setGlobalPitch(1f);
+					sendPlayEndMetrics(true);
 					if (!resource.isUpdateScore()) {
 						resource.getReplayData().randomoptionseed = -1;
 						logger.info("アシストモード時は同じ譜面でリプレイできません");
@@ -859,6 +861,7 @@ public class BMSPlayer extends MainState {
 					if (autoplay.mode == BMSPlayerMode.Mode.PLAY || autoplay.mode == BMSPlayerMode.Mode.REPLAY) {
 						resource.setScoreData(createScoreData());
 					}
+					sendPlayEndMetrics(false);
 					resource.setCombo(judge.getCourseCombo());
 					resource.setMaxcombo(judge.getCourseMaxcombo());
 					saveConfig();
@@ -899,6 +902,7 @@ public class BMSPlayer extends MainState {
 					if (autoplay.mode == BMSPlayerMode.Mode.PLAY || autoplay.mode == BMSPlayerMode.Mode.REPLAY) {
 						resource.setScoreData(createScoreData());
 					}
+					sendPlayEndMetrics(false);
 					resource.setCombo(judge.getCourseCombo());
 					resource.setMaxcombo(judge.getCourseMaxcombo());
 					saveConfig();
@@ -930,6 +934,7 @@ public class BMSPlayer extends MainState {
 				if ((resource.getPlayMode().mode == BMSPlayerMode.Mode.PLAY
 						&& input.startPressed() ^ input.isSelectPressed()) && resource.getCourseBMSModels() == null) {
 					main.getAudioProcessor().setGlobalPitch(1f);
+					sendPlayEndMetrics(true);
 					if (!resource.isUpdateScore()) {
 						resource.getReplayData().randomoptionseed = -1;
 						logger.info("アシストモード時は同じ譜面でリプレイできません");
@@ -953,6 +958,18 @@ public class BMSPlayer extends MainState {
 		}
 
 		prevtime = micronow;
+	}
+
+	private void sendPlayEndMetrics(boolean quickRetry) {
+		if (playEndMetricsSent || judge == null) {
+			return;
+		}
+		int playedNotes = Math.max(0, judge.getPastNotes());
+		int totalNotes = Math.max(0, model != null ? model.getTotalNotes() : resource.getSongdata().getNotes());
+		long elapsedSeconds = timer.isTimerOn(TIMER_PLAY) ? Math.max(0, timer.getNowTime(TIMER_PLAY) / 1000) : 0;
+		OrajaHelperClient.sendPlayEnd(resource.getSongdata(), playinfo, model != null ? model.getMode() : null,
+				playedNotes, totalNotes, elapsedSeconds, quickRetry);
+		playEndMetricsSent = true;
 	}
 
 	public void setPlaySpeed(int playspeed) {
