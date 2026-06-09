@@ -1,17 +1,47 @@
 [
 	{
-		"name":"RANDOM SELECT"
+		"name": "RANDOM SELECT"
 	},
 	{
-		"name":"NO PLAY RANDOM SELECT",
+		"name": "NO PLAY RANDOM SELECT",
 		"filter": {
 			"playcount": 0
 		}
 	},
 	{
-		"name":"FAILED RANDOM SELECT",
+		"name": "FAILED RANDOM SELECT",
 		"filter": {
 			"clear": 1
+		}
+	},
+	{
+		"name": "NOT EASY RANDOM SELECT",
+		"filter": {
+			"clear": "<=3"
+		}
+	},
+	{
+		"name": "NOT CLEAR RANDOM SELECT",
+		"filter": {
+			"clear": "<=4"
+		}
+	},
+	{
+		"name": "NOT HARD RANDOM SELECT",
+		"filter": {
+			"clear": "<=5"
+		}
+	},
+	{
+		"name": "NOT EX-HARD RANDOM SELECT",
+		"filter": {
+			"clear": "<=6"
+		}
+	},
+	{
+		"name": "NOT FULL COMBO RANDOM SELECT",
+		"filter": {
+			"clear": "<=7"
 		}
 	}
 ]
