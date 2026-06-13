@@ -704,7 +704,6 @@ public final class MusicSelector extends MainState {
 			return;
 		}
 		OrajaHelperClient.sendSelect(pendingOrajaHelperSong);
-		OrajaHelperClient.sendSelectNowPlaying(pendingOrajaHelperSong);
 		pendingOrajaHelperSongSent = true;
 	}
 

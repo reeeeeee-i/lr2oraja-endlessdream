@@ -40,11 +40,6 @@ public final class OrajaHelperClient {
 		send(payload);
 	}
 
-	public static void sendSelectNowPlaying(SongData song) {
-		Map<String, Object> payload = basePayload("song_play", "play", song);
-		send(payload);
-	}
-
 	public static void sendPlayEnd(SongData song, ReplayData replay, Mode mode, ScoreData score, int playedNotes,
 			int totalNotes, long elapsedSeconds, boolean quickRetry) {
 		Map<String, Object> payload = basePayload("song_play_end", "play", song);
