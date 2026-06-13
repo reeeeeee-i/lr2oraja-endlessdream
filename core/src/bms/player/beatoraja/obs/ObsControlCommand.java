@@ -12,11 +12,11 @@ public class ObsControlCommand {
 
 	public ObsControlCommand(String timing, String action, String targetScene, String targetSource,
 			String transitionScene) {
-		this.timing = timing;
-		this.action = action;
-		this.targetScene = targetScene;
-		this.targetSource = targetSource;
-		this.transitionScene = transitionScene;
+		this.timing = timing != null ? timing : "";
+		this.action = action != null ? action : "";
+		this.targetScene = targetScene != null ? targetScene : "";
+		this.targetSource = targetSource != null ? targetSource : "";
+		this.transitionScene = transitionScene != null ? transitionScene : "";
 	}
 
 	public String getTiming() {

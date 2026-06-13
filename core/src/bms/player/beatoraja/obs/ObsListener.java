@@ -24,6 +24,7 @@ public class ObsListener implements MainStateListener {
 
 	private volatile ScheduledFuture<?> scheduledStopTask;
 	private volatile boolean mainStartTriggered = false;
+	private volatile boolean playEndTriggered = false;
 
 	public ObsListener(Config config) {
 		this.config = config;
@@ -92,7 +93,10 @@ public class ObsListener implements MainStateListener {
 	}
 
 	public synchronized void triggerPlayEnded() {
-		triggerStateChange(MainStateType.PLAY.name() + ObsConfigurationView.TIMING_SUFFIX_END);
+		if (!playEndTriggered) {
+			playEndTriggered = true;
+			triggerStateChange(MainStateType.PLAY.name() + ObsConfigurationView.TIMING_SUFFIX_END);
+		}
 	}
 
 	public synchronized void triggerStateChange(MainStateType stateType) {
@@ -205,7 +209,12 @@ public class ObsListener implements MainStateListener {
 			triggerReplay();
 		} else if (currentStateType != lastStateType) {
 			if (lastStateType != null) {
-				triggerStateChange(lastStateType.name() + ObsConfigurationView.TIMING_SUFFIX_END);
+				if (lastStateType != MainStateType.PLAY || !playEndTriggered) {
+					triggerStateChange(lastStateType.name() + ObsConfigurationView.TIMING_SUFFIX_END);
+				}
+			}
+			if (currentStateType == MainStateType.PLAY) {
+				playEndTriggered = false;
 			}
 			triggerStateChange(currentStateType);
 		}

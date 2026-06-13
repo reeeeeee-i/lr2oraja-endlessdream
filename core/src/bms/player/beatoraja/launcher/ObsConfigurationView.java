@@ -307,9 +307,11 @@ public class ObsConfigurationView implements Initializable {
 	}
 
 	private void handleObsClose() {
-		if ("connecting".equals(status)) {
-			setConnectionStatus("auth_fail", "Authentication failed!");
-		}
+		Platform.runLater(() -> {
+			if ("connecting".equals(status)) {
+				setConnectionStatus("auth_fail", "Authentication failed!");
+			}
+		});
 	}
 
 	private void handleVersionReceived(final ObsVersionInfo version) {
