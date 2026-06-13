@@ -65,13 +65,14 @@ plugin build for LR2oraja Endless Dream. The plugin reports the host jar hash
 and `client_kind=lr2oraja-ed`, which lets BMS-IR keep this client in the
 LR2oraja ED bucket.
 
-BMS-IR plugin `0.0.32` also supports primary-IR table delivery for active
+BMS-IR plugin `0.0.33` also supports primary-IR table delivery for active
 BMS-IR score attack one-chart courses. Set BMS-IR as the primary IR if you want
 those courses to appear in music select.
 
-Version `0.0.32` is recommended because it also reports wrong BMS-IR
+Version `0.0.33` is recommended because it also reports wrong BMS-IR
 ID/password combinations as login failures instead of falling back to read-only
-mode.
+mode, and preserves extended clear types such as EX HARD from BMS-IR ranking
+XML.
 
 For public BMS-IR allowlist registration, publish versioned release jars and
 share their MD5 and SHA-256 hashes. Locally built jars can have different hashes
