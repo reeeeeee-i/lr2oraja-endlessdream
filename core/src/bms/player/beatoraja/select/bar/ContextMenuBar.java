@@ -227,13 +227,13 @@ public class ContextMenuBar extends DirectoryBar {
     }
 
     private void addMetaEntries(ArrayList<Bar> options) {
-        var lr2irPage = new FunctionBar((selector, self) -> {
-            String urlBase =
-                "http://www.dream-pro.info/~lavalse/LR2IR/search.cgi?mode=ranking&bmsmd5=";
-            boolean success = ContextMenuBar.browserOpen(urlBase + song.getMd5());
-            selector.play(success ? FOLDER_OPEN : OPTION_CHANGE);
-        }, "Open LR2IR page", STYLE_FOLDER);
-        if (song.getMd5() != null) options.add(lr2irPage);
+        var bmsirPage = new FunctionBar((selector, self) -> {
+    String urlBase =
+        "https://www.bms-ir.org/new/song?songmd5=";
+    boolean success = ContextMenuBar.browserOpen(urlBase + song.getMd5());
+    selector.play(success ? FOLDER_OPEN : OPTION_CHANGE);
+}, "Open BMS-IR page", STYLE_FOLDER);
+        if (song.getMd5() != null) options.add(bmsirPage);
 
         var chartViewer = new FunctionBar((selector, self) -> {
             String urlBase = "https://bms-score-viewer.pages.dev/view?md5=";
