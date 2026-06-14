@@ -237,9 +237,9 @@ public class WebhookHandler {
         var song = currentState.resource.getSongdata();
         String ss = "";
         var md5 = song.getMd5();
-        String lr2ir =
-                "http://www.dream-pro.info/~lavalse/LR2IR/search.cgi?mode=ranking&bmsmd5=";
-        if (md5 != null) { ss += " [LR2IR](" + lr2ir + md5 + ")"; }
+        String bmsir =
+        "https://www.bms-ir.org/new/song?songmd5=";
+        if (md5 != null) { ss += " [BMS-IR](" + bmsir + md5 + ")"; }
         String charturl = "https://bms-score-viewer.pages.dev/view?md5=";
         if (md5 != null) ss += " |";
         ss += " [Chart](" + charturl + md5 + ")";
