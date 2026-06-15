@@ -14,6 +14,9 @@ import org.slf4j.LoggerFactory;
 
 public final class NamedPipeSender {
 	private static final Logger logger = LoggerFactory.getLogger(NamedPipeSender.class);
+	private static final int MAX_SEND_ATTEMPTS = 8;
+	private static final long INITIAL_RETRY_DELAY_MS = 50L;
+	private static final long MAX_RETRY_DELAY_MS = 1000L;
 
 	private final String pipePath;
 
@@ -22,18 +25,61 @@ public final class NamedPipeSender {
 	}
 
 	public void sendLine(String line) {
-		try (BufferedWriter writer = new BufferedWriter(
-				new OutputStreamWriter(new FileOutputStream(pipePath), StandardCharsets.UTF_8))) {
+		long retryDelay = INITIAL_RETRY_DELAY_MS;
+		Exception lastError = null;
+		for (int attempt = 1; attempt <= MAX_SEND_ATTEMPTS; attempt++) {
+			try {
+				writeLine(line);
+				dump(line, null, attempt);
+				if (attempt > 1) {
+					logger.info("Named pipe送信成功({}) attempt={}", pipePath, attempt);
+				}
+				return;
+			} catch (Exception e) {
+				lastError = e;
+				dump(line, e, attempt);
+				if (attempt < MAX_SEND_ATTEMPTS) {
+					sleepBeforeRetry(retryDelay);
+					retryDelay = Math.min(retryDelay * 2, MAX_RETRY_DELAY_MS);
+				}
+			}
+		}
+		logger.debug("Named pipe送信失敗({}) attempts={} error={}", pipePath, MAX_SEND_ATTEMPTS,
+				lastError != null ? lastError.getMessage() : "");
+	}
+
+	private void writeLine(String line) throws Exception {
+		BufferedWriter writer = null;
+		boolean flushed = false;
+		try {
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pipePath), StandardCharsets.UTF_8));
 			writer.write(line);
 			writer.newLine();
-			dump(line, null);
-		} catch (Exception e) {
-			dump(line, e);
-			logger.debug("Named pipe送信失敗({}): {}", pipePath, e.getMessage());
+			writer.flush();
+			flushed = true;
+		} finally {
+			if (writer != null) {
+				try {
+					writer.close();
+				} catch (Exception e) {
+					if (!flushed) {
+						throw e;
+					}
+					logger.debug("Named pipe close失敗({}): {}", pipePath, e.getMessage());
+				}
+			}
 		}
 	}
 
-	private void dump(String line, Exception error) {
+	private void sleepBeforeRetry(long retryDelay) {
+		try {
+			Thread.sleep(retryDelay);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+	}
+
+	private void dump(String line, Exception error, int attempt) {
 		try {
 			Path logDir = Path.of("log");
 			Files.createDirectories(logDir);
@@ -42,6 +88,7 @@ public final class NamedPipeSender {
 			appendJsonField(dump, "time", LocalDateTime.now().toString()).append(',');
 			appendJsonField(dump, "pipe", pipePath).append(',');
 			appendJsonField(dump, "status", error == null ? "sent" : "failed").append(',');
+			dump.append("\"attempt\":").append(attempt).append(',');
 			appendJsonField(dump, "error", error == null ? "" : error.getMessage()).append(',');
 			appendJsonField(dump, "line", line);
 			dump.append("}\n");
