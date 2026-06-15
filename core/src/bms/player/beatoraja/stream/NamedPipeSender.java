@@ -27,7 +27,10 @@ public final class NamedPipeSender {
 	public void sendLine(String line) {
 		long retryDelay = INITIAL_RETRY_DELAY_MS;
 		Exception lastError = null;
+		int attempts = 0;
+		boolean interrupted = false;
 		for (int attempt = 1; attempt <= MAX_SEND_ATTEMPTS; attempt++) {
+			attempts = attempt;
 			try {
 				writeLine(line);
 				dump(line, null, attempt);
@@ -40,34 +43,29 @@ public final class NamedPipeSender {
 				dump(line, e, attempt);
 				if (attempt < MAX_SEND_ATTEMPTS) {
 					sleepBeforeRetry(retryDelay);
+					if (Thread.currentThread().isInterrupted()) {
+						interrupted = true;
+						break;
+					}
 					retryDelay = Math.min(retryDelay * 2, MAX_RETRY_DELAY_MS);
 				}
 			}
 		}
-		logger.debug("Named pipe送信失敗({}) attempts={} error={}", pipePath, MAX_SEND_ATTEMPTS,
-				lastError != null ? lastError.getMessage() : "");
+		if (interrupted) {
+			logger.debug("Named pipe送信中断({}) attempts={} error={}", pipePath, attempts,
+					lastError != null ? lastError.getMessage() : "");
+		} else {
+			logger.debug("Named pipe送信失敗({}) attempts={} error={}", pipePath, attempts,
+					lastError != null ? lastError.getMessage() : "");
+		}
 	}
 
 	private void writeLine(String line) throws Exception {
-		BufferedWriter writer = null;
-		boolean flushed = false;
-		try {
-			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pipePath), StandardCharsets.UTF_8));
+		try (BufferedWriter writer = new BufferedWriter(
+				new OutputStreamWriter(new FileOutputStream(pipePath), StandardCharsets.UTF_8))) {
 			writer.write(line);
 			writer.newLine();
 			writer.flush();
-			flushed = true;
-		} finally {
-			if (writer != null) {
-				try {
-					writer.close();
-				} catch (Exception e) {
-					if (!flushed) {
-						throw e;
-					}
-					logger.debug("Named pipe close失敗({}): {}", pipePath, e.getMessage());
-				}
-			}
 		}
 	}
 
