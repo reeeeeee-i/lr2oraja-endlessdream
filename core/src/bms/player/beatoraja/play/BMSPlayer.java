@@ -222,9 +222,9 @@ public class BMSPlayer extends MainState {
 		boolean score = true;
 		boolean forceNoIRSend = false;
 
-		// Allow osu score submission
+		// Don't send score to IR if chart is from osu
 		if (model.isFromOSU()) {
-			forceNoIRSend = false;
+			forceNoIRSend = true;
 		}
 
 		// RANDOM構文処理
