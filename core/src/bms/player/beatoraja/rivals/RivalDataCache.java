@@ -16,14 +16,21 @@ public final class RivalDataCache extends ScoreDataCache {
 	private static final Logger logger = LoggerFactory.getLogger(RivalDataCache.class);
 
     private final ScoreDatabaseAccessor scoreDb;
+    private final String playerName; // ライバルプレイヤー名
 
     public RivalDataCache(ScoreDatabaseAccessor scoreDb) {
         this.scoreDb = scoreDb;
+        bms.player.beatoraja.PlayerInformation info = scoreDb.getInformation();
+        this.playerName = info != null ? info.getName() : "Rival";
     }
 
     @Override
     protected ScoreData readScoreDatasFromSource(SongData song, int lnmode) {
-        return scoreDb.getScoreData(song.getSha256(), song.hasUndefinedLongNote() ? lnmode : 0);
+        ScoreData score = scoreDb.getScoreData(song.getSha256(), song.hasUndefinedLongNote() ? lnmode : 0);
+        if (score != null) {
+            score.setPlayer(this.playerName);
+        }
+        return score;
     }
 
     @Override
