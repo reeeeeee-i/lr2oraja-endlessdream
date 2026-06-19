@@ -435,9 +435,9 @@ public class LaneRenderer {
 				boolean b = true;
 				for (int lane = 0; lane < lanes.length; lane++) {
 					final Note note = tl.getNote(lane);
-					// config.isShowpastnote() の条件を削除し、未処理(State 0)なら常に pos を維持するように変更
+					// 判定ラインへのノーツ滞留設定(noteretention)または過去ノート表示設定(showpastnote)がONかつ未処理(State 0)なら常に pos を維持
 					if (note != null && ((note instanceof LongNote ln && (ln.isEnd() ? ln : ln.getPair()).getMicroTime() >= microtime)
-							|| (note instanceof NormalNote && note.getState() == 0))) {
+							|| ((config.isNoteretention() || config.isShowpastnote()) && note instanceof NormalNote && note.getState() == 0))) {
 						b = false;
 						break;
 					}
@@ -530,8 +530,8 @@ public class LaneRenderer {
 								? lanes[lane].processedImage : lanes[lane].noteImage;
 								sprite.draw(s, dstx, dsty, dstw, dsth);
 							}
-						// config.isShowpastnote() の条件を削除
-						} else if (tl.getMicroTime() >= microtime || note.getState() == 0) {
+						// 判定ラインへのノーツ滞留設定(noteretention)または過去ノート表示設定(showpastnote)がONかつ未処理なら描画する
+						} else if (tl.getMicroTime() >= microtime || ((config.isNoteretention() || config.isShowpastnote()) && note.getState() == 0)) {
 							final TextureRegion s = config.isMarkprocessednote() && note.getState() != 0
 									? lanes[lane].processedImage : lanes[lane].noteImage;
 							sprite.draw(s, dstx, dsty, dstw, dsth);

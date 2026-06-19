@@ -227,6 +227,10 @@ public final class PlayerConfig {
 	 * 通過ノートを表示するかどうか
 	 */
 	private boolean showpastnote = false;
+	/**
+	 * 判定ラインへのノーツ滞留をするかどうか
+	 */
+	private boolean noteretention = true;
 	
 	/**
 	 * チャートプレビューを使用するかどうか
@@ -766,6 +770,14 @@ public final class PlayerConfig {
 
 	public void setShowpastnote(boolean showpastnote) {
 		this.showpastnote = showpastnote;
+	}
+
+	public boolean isNoteretention() {
+		return noteretention;
+	}
+
+	public void setNoteretention(boolean noteretention) {
+		this.noteretention = noteretention;
 	}
 
 	public String getTwitterConsumerKey() {
