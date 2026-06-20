@@ -40,7 +40,39 @@ public final class GrooveGauge {
 		this.gauges = new Gauge[property.values.length];
 		for(int i = 0; i < property.values.length; i++) {
 			GaugeElementProperty rawElement = property.values[i];
-			if (dxMode) {
+			if (dxMode && model.getMode() == Mode.POPN_9K) {
+				switch (i) {
+				case 0: // ASSIST EASY
+					rawElement = GaugeElementProperty.ASSIST_EASY_POP;
+					break;
+				case 1: // EASY
+					rawElement = GaugeElementProperty.EASY_POP;
+					break;
+				case 2: // NORMAL
+					rawElement = GaugeElementProperty.NORMAL_POP;
+					break;
+				case 3: // HARD
+					rawElement = GaugeElementProperty.HARD_POP;
+					break;
+				case 4: // EXHARD
+					rawElement = GaugeElementProperty.EXHARD_POP;
+					break;
+				case 5: // HAZARD
+					rawElement = GaugeElementProperty.HAZARD_POP;
+					break;
+				case 6: // CLASS
+					rawElement = GaugeElementProperty.CLASS_POP;
+					break;
+				case 7: // EXCLASS
+					rawElement = GaugeElementProperty.EXCLASS_POP;
+					break;
+				case 8: // EXHARDCLASS
+					rawElement = GaugeElementProperty.EXHARDCLASS_POP;
+					break;
+				default:
+					break;
+				}
+			} else if (dxMode) {
 				switch (i) {
 				case 0: // ASSIST EASY
 					rawElement = GaugeElementProperty.ASSIST_EASY_IIDX;
@@ -254,6 +286,11 @@ public final class GrooveGauge {
 			
 			this.value = element.init;
 			this.gauge = element.value.clone();
+			
+			// 9KEYで1537ノーツ以上の場合にのみ、GDの回復量を2倍
+			if (this.dxMode &&  element.modifier == GaugeModifier.POP && 1537 <= model.getTotalNotes()) {
+				this.gauge[2] *= 2.0f;
+			}
 
 			double iidxTotalVal = 7.605 * model.getTotalNotes() / (0.01 * model.getTotalNotes() + 6.5);
 			iidxTotalVal = Math.max(260, iidxTotalVal);
@@ -261,8 +298,8 @@ public final class GrooveGauge {
 			
 			if(element.modifier != null) {
 				for(int i = 0;i < gauge.length;i++) {
-					// DX MODEかつModifierがIIDXの場合のみ、TOTALに基づいた回復量の再計算を行う
-					if(this.dxMode && element.modifier == GaugeModifier.IIDX) {
+					// DX MODEかつModifierがIIDX/POPの場合のみ、TOTALに基づいた回復量の再計算を行う
+					if(this.dxMode && (element.modifier == GaugeModifier.IIDX || element.modifier == GaugeModifier.POP)) {
 						gauge[i] = element.modifier.modify(gauge[i], model);
 					} else {
 						gauge[i] = element.modifier.modify(gauge[i], model);
@@ -379,6 +416,27 @@ public final class GrooveGauge {
 				double iidxTotalVal = 7.605 * totalNotes / (0.01 * totalNotes + 6.5);
 				iidxTotalVal = Math.max(260, iidxTotalVal);
 				return (float) (f * iidxTotalVal / totalNotes);
+			}
+			return f;
+		};
+
+		/**
+		 * DX MODE (9KEY) 用 TOTAL計算
+		 */
+		public static final GaugeModifier POP = (f, model) -> {
+			if(f > 0) {
+				int totalNotes = model.getTotalNotes();
+				if (totalNotes == 0) return 0f; // ゼロ除算防止
+				
+				if (totalNotes > 3072) {
+					// 3073ノーツ以上の場合は、ゲージ上昇率を元に計算する
+					double popTotalVal = Math.floor(0.097 * totalNotes);
+					return (float) (f * popTotalVal / totalNotes);
+				} else {				
+					double popTotalVal = Math.min(300, Math.floor(3072 / totalNotes) * totalNotes / 1024 * 100);
+					return (float) (f * popTotalVal / totalNotes);
+				}
+				
 			}
 			return f;
 		};
