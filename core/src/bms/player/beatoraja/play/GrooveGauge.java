@@ -425,33 +425,33 @@ public final class GrooveGauge {
 				double popTotalVal = Math.floor(3072 / totalNotes) * totalNotes / 1024 * 100;
 
 				// 回復量が切り替わる際のトータル値に設定
-				if (model.getTotalNotes() < 3073) {
+				if (1537 <= model.getTotalNotes() && model.getTotalNotes() < 3073) {
 					popTotalVal = Math.min(150, popTotalVal);
-				} else if (model.getTotalNotes() < 1537) {
+				} else if (1025 <= model.getTotalNotes() && model.getTotalNotes() < 1537) {
 					popTotalVal = Math.min(200, popTotalVal);
-				} else if (model.getTotalNotes() < 1025) {
+				} else if (769 <= model.getTotalNotes() && model.getTotalNotes() < 1025) {
 					popTotalVal = Math.min(225, popTotalVal);
-				} else if (model.getTotalNotes() < 769) {
+				} else if (615 <= model.getTotalNotes() && model.getTotalNotes() < 769) {
 					popTotalVal = Math.min(240, popTotalVal);
-				} else if (model.getTotalNotes() < 615) {
+				} else if (513 <= model.getTotalNotes() && model.getTotalNotes() < 615) {
 					popTotalVal = Math.min(250, popTotalVal);
-				} else if (model.getTotalNotes() < 513) {
+				} else if (439 <= model.getTotalNotes() && model.getTotalNotes() < 513) {
 					popTotalVal = Math.min(257, popTotalVal);
-				} else if (model.getTotalNotes() < 439) {
+				} else if (385 <= model.getTotalNotes() && model.getTotalNotes() < 439) {
 					popTotalVal = Math.min(263, popTotalVal);
-				} else if (model.getTotalNotes() < 385) {
+				} else if (342 <= model.getTotalNotes() && model.getTotalNotes() < 385) {
 					popTotalVal = Math.min(267, popTotalVal);
-				} else if (model.getTotalNotes() < 342) {
+				} else if (308 <= model.getTotalNotes() && model.getTotalNotes() < 342) {
 					popTotalVal = Math.min(270, popTotalVal);
-				} else if (model.getTotalNotes() < 308) {
+				} else if (280 <= model.getTotalNotes() && model.getTotalNotes() < 308) {
 					popTotalVal = Math.min(273, popTotalVal);
-				} else if (model.getTotalNotes() < 280) {
+				} else if (257 <= model.getTotalNotes() && model.getTotalNotes() < 280) {
 					popTotalVal = Math.min(276, popTotalVal);
-				} else if (model.getTotalNotes() < 257) {
+				} else if (237 <= model.getTotalNotes() && model.getTotalNotes() < 257) {
 					popTotalVal = Math.min(277, popTotalVal);
-				} else if (model.getTotalNotes() < 237) {
+				} else if (220 <= model.getTotalNotes() && model.getTotalNotes() < 237) {
 					popTotalVal = Math.min(279, popTotalVal);
-				} else if (model.getTotalNotes() < 220) {
+				} else if (205 <= model.getTotalNotes() && model.getTotalNotes() < 220) {
 					popTotalVal = Math.min(280, popTotalVal);
 				} else if (model.getTotalNotes() < 205) {
 					popTotalVal = Math.min(300, popTotalVal);
