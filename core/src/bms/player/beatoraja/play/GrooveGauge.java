@@ -427,22 +427,34 @@ public final class GrooveGauge {
 				// 回復量が切り替わる際のトータル値に設定
 				if (model.getTotalNotes() < 3073) {
 					popTotalVal = Math.min(150, popTotalVal);
-				} else if (model.getTotalNotes() < 1025) {
+				} else if (model.getTotalNotes() < 1537) {
 					popTotalVal = Math.min(200, popTotalVal);
-				} else if (model.getTotalNotes() < 769) {
+				} else if (model.getTotalNotes() < 1025) {
 					popTotalVal = Math.min(225, popTotalVal);
-				} else if (model.getTotalNotes() < 615) {
+				} else if (model.getTotalNotes() < 769) {
 					popTotalVal = Math.min(240, popTotalVal);
-				} else if (model.getTotalNotes() < 513) {
+				} else if (model.getTotalNotes() < 615) {
 					popTotalVal = Math.min(250, popTotalVal);
-				} else if (model.getTotalNotes() < 439) {
+				} else if (model.getTotalNotes() < 513) {
 					popTotalVal = Math.min(257, popTotalVal);
-				} else if (model.getTotalNotes() < 385) {
+				} else if (model.getTotalNotes() < 439) {
 					popTotalVal = Math.min(263, popTotalVal);
-				} else if (model.getTotalNotes() < 342) {
+				} else if (model.getTotalNotes() < 385) {
 					popTotalVal = Math.min(267, popTotalVal);
-				} else if (model.getTotalNotes() < 308) {
+				} else if (model.getTotalNotes() < 342) {
 					popTotalVal = Math.min(270, popTotalVal);
+				} else if (model.getTotalNotes() < 308) {
+					popTotalVal = Math.min(273, popTotalVal);
+				} else if (model.getTotalNotes() < 280) {
+					popTotalVal = Math.min(276, popTotalVal);
+				} else if (model.getTotalNotes() < 257) {
+					popTotalVal = Math.min(277, popTotalVal);
+				} else if (model.getTotalNotes() < 237) {
+					popTotalVal = Math.min(279, popTotalVal);
+				} else if (model.getTotalNotes() < 220) {
+					popTotalVal = Math.min(280, popTotalVal);
+				} else if (model.getTotalNotes() < 205) {
+					popTotalVal = Math.min(300, popTotalVal);
 				}
 
 				return (float) (f * popTotalVal / totalNotes);
