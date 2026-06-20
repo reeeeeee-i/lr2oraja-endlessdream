@@ -286,6 +286,11 @@ public final class GrooveGauge {
 			
 			this.value = element.init;
 			this.gauge = element.value.clone();
+			
+			// 9KEYで1537ノーツ以上の場合にのみ、GDの回復量を2倍
+			if (this.dxMode &&  element.modifier == GaugeModifier.POP && 1537 <= model.getTotalNotes()) {
+				this.gauge[2] *= 2.0f;
+			}
 
 			double iidxTotalVal = 7.605 * model.getTotalNotes() / (0.01 * model.getTotalNotes() + 6.5);
 			iidxTotalVal = Math.max(260, iidxTotalVal);
@@ -425,36 +430,36 @@ public final class GrooveGauge {
 				double popTotalVal = Math.floor(3072 / totalNotes) * totalNotes / 1024 * 100;
 
 				// 回復量が切り替わる際のトータル値に設定
-				if (1537 <= model.getTotalNotes() && model.getTotalNotes() < 3073) {
-					popTotalVal = Math.min(150, popTotalVal);
-				} else if (1025 <= model.getTotalNotes() && model.getTotalNotes() < 1537) {
-					popTotalVal = Math.min(200, popTotalVal);
-				} else if (769 <= model.getTotalNotes() && model.getTotalNotes() < 1025) {
-					popTotalVal = Math.min(225, popTotalVal);
-				} else if (615 <= model.getTotalNotes() && model.getTotalNotes() < 769) {
-					popTotalVal = Math.min(240, popTotalVal);
-				} else if (513 <= model.getTotalNotes() && model.getTotalNotes() < 615) {
-					popTotalVal = Math.min(250, popTotalVal);
-				} else if (439 <= model.getTotalNotes() && model.getTotalNotes() < 513) {
-					popTotalVal = Math.min(257, popTotalVal);
-				} else if (385 <= model.getTotalNotes() && model.getTotalNotes() < 439) {
-					popTotalVal = Math.min(263, popTotalVal);
-				} else if (342 <= model.getTotalNotes() && model.getTotalNotes() < 385) {
-					popTotalVal = Math.min(267, popTotalVal);
-				} else if (308 <= model.getTotalNotes() && model.getTotalNotes() < 342) {
-					popTotalVal = Math.min(270, popTotalVal);
-				} else if (280 <= model.getTotalNotes() && model.getTotalNotes() < 308) {
-					popTotalVal = Math.min(273, popTotalVal);
-				} else if (257 <= model.getTotalNotes() && model.getTotalNotes() < 280) {
-					popTotalVal = Math.min(276, popTotalVal);
-				} else if (237 <= model.getTotalNotes() && model.getTotalNotes() < 257) {
-					popTotalVal = Math.min(277, popTotalVal);
-				} else if (220 <= model.getTotalNotes() && model.getTotalNotes() < 237) {
-					popTotalVal = Math.min(279, popTotalVal);
-				} else if (205 <= model.getTotalNotes() && model.getTotalNotes() < 220) {
-					popTotalVal = Math.min(280, popTotalVal);
-				} else if (model.getTotalNotes() < 205) {
-					popTotalVal = Math.min(300, popTotalVal);
+				if (1537 <= model.getTotalNotes()) {
+					popTotalVal = Math.max(150, popTotalVal);
+				} else if (1025 <= model.getTotalNotes()) {
+					popTotalVal = Math.max(200, popTotalVal);
+				} else if (769 <= model.getTotalNotes()) {
+					popTotalVal = Math.max(225, popTotalVal);
+				} else if (615 <= model.getTotalNotes()) {
+					popTotalVal = Math.max(240, popTotalVal);
+				} else if (513 <= model.getTotalNotes()) {
+					popTotalVal = Math.max(250, popTotalVal);
+				} else if (439 <= model.getTotalNotes()) {
+					popTotalVal = Math.max(257, popTotalVal);
+				} else if (385 <= model.getTotalNotes()) {
+					popTotalVal = Math.max(263, popTotalVal);
+				} else if (342 <= model.getTotalNotes()) {
+					popTotalVal = Math.max(267, popTotalVal);
+				} else if (308 <= model.getTotalNotes()) {
+					popTotalVal = Math.max(270, popTotalVal);
+				} else if (280 <= model.getTotalNotes()) {
+					popTotalVal = Math.max(273, popTotalVal);
+				} else if (257 <= model.getTotalNotes()) {
+					popTotalVal = Math.max(276, popTotalVal);
+				} else if (237 <= model.getTotalNotes()) {
+					popTotalVal = Math.max(277, popTotalVal);
+				} else if (220 <= model.getTotalNotes()) {
+					popTotalVal = Math.max(279, popTotalVal);
+				} else if (205 <= model.getTotalNotes()) {
+					popTotalVal = Math.max(280, popTotalVal);
+				} else {
+					popTotalVal = Math.max(300, popTotalVal);
 				}
 
 				return (float) (f * popTotalVal / totalNotes);
