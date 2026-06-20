@@ -73,6 +73,17 @@ public enum JudgeProperty {
             new boolean[]{true, true, true, true, true, false },
             JudgeWindowRule.IIDX_RULE
             ),
+    POP(new long[][]{ {-25000, 25000}, {-50000, 50000}, {-87500, 87500}, {-100000, 100000}, {-112500, 500000} },
+            new long[][]{},
+            new long[][]{ {-120000, 120000}, {-150000, 150000}, {-217000, 217000}, {-283000, 283000}},
+            200000,
+            new long[][]{},
+            0,
+            new boolean[]{true, true, true, false, false, false },
+            MissCondition.ONE,
+            new boolean[]{true, true, true, false, true, false },
+            JudgeWindowRule.IIDX_RULE
+            ),
     ;
 
     /**
