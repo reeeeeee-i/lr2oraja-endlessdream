@@ -301,6 +301,8 @@ public final class GrooveGauge {
 					// DX MODEかつModifierがIIDX/POPの場合のみ、TOTALに基づいた回復量の再計算を行う
 					if(this.dxMode && (element.modifier == GaugeModifier.IIDX || element.modifier == GaugeModifier.POP)) {
 						gauge[i] = element.modifier.modify(gauge[i], model);
+					} else {
+						gauge[i] = element.modifier.modify(gauge[i], model);
 					}
 				}				
 			}
