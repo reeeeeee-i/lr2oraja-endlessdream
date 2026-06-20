@@ -153,6 +153,29 @@ public enum GaugeProperty {
         // EXHARDCLASS: 減少量がCLASSの4倍。BAD/空POOR -6.0%, 見逃しPOOR -10.0%
         EXHARDCLASS_IIDX(null, 0, 100, 100, 0, 0, new float[]{0.16f, 0.16f, 0.04f, -6.0f, -10.0f, -6.0f}, new float[][]{}),
 
+        // DX MODE 定義 (pms)
+        // POP modifier は回復量(TOTAL計算)を自動処理します。
+        // 減少量(Penalty)はここで固定値を定義します。
+        // 回復値(PG/GR/GD)は基礎倍率(1.0 または 0.5)を指定し、実際の回復量はTOTAL値に基づいて計算されます。
+        
+        // ASSIST EASY (DX MODEではEASYと同じ)
+        ASSIST_EASY_POP(POP, 2, 100, 25, 50, 0, new float[]{1.0f, 1.0f, 0.5f, -0.85f, -2.5f, -2.5f}, new float[][]{}),
+        // EASY: NORMALの80%減少。POOR/空POOR -２.５%, BAD -0.85%
+        EASY_POP       (POP, 2, 100, 25, 67, 0, new float[]{1.0f, 1.0f, 0.5f, -0.85f, -2.5f, -2.5f}, new float[][]{}),
+        // NORMAL: POOR/空POOR -5%, BAD -1.7%
+        NORMAL_POP     (POP, 2, 100, 25, 67, 0, new float[]{1.0f, 1.0f, 0.5f, -1.7f, -5.0f, -5.0f}, new float[][]{}),
+        // HARD: POOR/空POOR -10.0%, BAD -3.4% (ノマゲとハードゲージの中間とした)
+        HARD_POP       (POP, 2, 100, 25, 67, 0, new float[]{1.0f, 1.0f, 0.5f, -3.4f, -10.0f, -10.0f}, new float[][]{}),
+        // EXHARD: POOR/空POOR -20.0%, BAD -6.8% (POPN HARDゲージ相当)
+        EXHARD_POP     (POP, 2, 100, 25, 67, 0, new float[]{1.0f, 1.0f, 0.5f, -6.8f, -20.0f, -20.0f}, new float[][]{}),
+        // HAZARD: 回復量はPMS基準。減少量は BAD/POOR/空POOR 即死(-100%)。
+        // GOOD回復量は0%
+        HAZARD_POP     (null, 0, 100, 100, 0, 0, new float[]{0.15f, 0.06f, 0, -100.0f, -100.0f, -100.0f}, new float[][]{}),
+
+        CLASS_POP(null ,0 ,100 ,100, 0, 0, new float[]{0.15f, 0.15f, 0.06f, -1.5f, -3f, -3f}, new float[][]{{30, 0.5f}}),
+        EXCLASS_POP(null ,0 ,100 ,100, 0, 0, new float[]{0.15f, 0.15f, 0.03f, -3.0f, -6.0f, -6.0f}, new float[][]{}),
+        EXHARDCLASS_POP(null ,0 ,100 ,100, 0, 0, new float[]{0.15f, 0.15f, 0, -5.0f, -10.0f, -10.0f}, new float[][]{}),
+
         ;
 
         /**
