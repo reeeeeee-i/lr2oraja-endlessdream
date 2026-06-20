@@ -432,33 +432,33 @@ public final class GrooveGauge {
 				double popTotalVal = Math.floor(3072 / totalNotes) * totalNotes / 1024 * 100;
 
 				// 回復量が切り替わる際のトータル値に設定
-				if (1537 <= model.getTotalNotes()) {
+				if (1537 <= totalNotes) {
 					popTotalVal = Math.max(150, popTotalVal);
-				} else if (1025 <= model.getTotalNotes()) {
+				} else if (1025 <= totalNotes) {
 					popTotalVal = Math.max(200, popTotalVal);
-				} else if (769 <= model.getTotalNotes()) {
+				} else if (769 <= totalNotes) {
 					popTotalVal = Math.max(225, popTotalVal);
-				} else if (615 <= model.getTotalNotes()) {
+				} else if (615 <= totalNotes) {
 					popTotalVal = Math.max(240, popTotalVal);
-				} else if (513 <= model.getTotalNotes()) {
+				} else if (513 <= totalNotes) {
 					popTotalVal = Math.max(250, popTotalVal);
-				} else if (439 <= model.getTotalNotes()) {
+				} else if (439 <= totalNotes) {
 					popTotalVal = Math.max(257, popTotalVal);
-				} else if (385 <= model.getTotalNotes()) {
+				} else if (385 <= totalNotes) {
 					popTotalVal = Math.max(263, popTotalVal);
-				} else if (342 <= model.getTotalNotes()) {
+				} else if (342 <= totalNotes) {
 					popTotalVal = Math.max(267, popTotalVal);
-				} else if (308 <= model.getTotalNotes()) {
+				} else if (308 <= totalNotes) {
 					popTotalVal = Math.max(270, popTotalVal);
-				} else if (280 <= model.getTotalNotes()) {
+				} else if (280 <= totalNotes) {
 					popTotalVal = Math.max(273, popTotalVal);
-				} else if (257 <= model.getTotalNotes()) {
+				} else if (257 <= totalNotes) {
 					popTotalVal = Math.max(276, popTotalVal);
-				} else if (237 <= model.getTotalNotes()) {
+				} else if (237 <= totalNotes) {
 					popTotalVal = Math.max(277, popTotalVal);
-				} else if (220 <= model.getTotalNotes()) {
+				} else if (220 <= totalNotes) {
 					popTotalVal = Math.max(279, popTotalVal);
-				} else if (205 <= model.getTotalNotes()) {
+				} else if (205 <= totalNotes) {
 					popTotalVal = Math.max(280, popTotalVal);
 				} else {
 					popTotalVal = Math.max(300, popTotalVal);
