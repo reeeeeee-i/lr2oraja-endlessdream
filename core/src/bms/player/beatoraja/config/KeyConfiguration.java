@@ -1,17 +1,8 @@
 package bms.player.beatoraja.config;
 
-import bms.model.Mode;
-import bms.player.beatoraja.*;
-import bms.player.beatoraja.PlayModeConfig.ControllerConfig;
-import bms.player.beatoraja.PlayModeConfig.KeyboardConfig;
-import bms.player.beatoraja.PlayModeConfig.MidiConfig;
-import bms.player.beatoraja.input.BMControllerInputProcessor;
-import bms.player.beatoraja.input.BMSPlayerInputProcessor;
-import bms.player.beatoraja.input.KeyBoardInputProcesseor;
-import bms.player.beatoraja.input.KeyBoardInputProcesseor.ControlKeys;
-import bms.player.beatoraja.input.MidiInputProcessor;
-import bms.player.beatoraja.skin.SkinHeader;
-import bms.player.beatoraja.skin.SkinType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -24,10 +15,24 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import space.earlygrey.shapedrawer.ShapeDrawer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import bms.model.Mode;
+import bms.player.beatoraja.MainController;
+import bms.player.beatoraja.MainState;
+import bms.player.beatoraja.PlayModeConfig;
+import bms.player.beatoraja.PlayModeConfig.ControllerConfig;
+import bms.player.beatoraja.PlayModeConfig.KeyboardConfig;
+import bms.player.beatoraja.PlayModeConfig.MidiConfig;
+import bms.player.beatoraja.PlayerConfig;
+import bms.player.beatoraja.Resolution;
+import bms.player.beatoraja.input.BMControllerInputProcessor;
+import bms.player.beatoraja.input.BMSPlayerInputProcessor;
+import bms.player.beatoraja.input.KeyBoardInputProcesseor;
+import bms.player.beatoraja.input.KeyBoardInputProcesseor.ControlKeys;
+import bms.player.beatoraja.input.MidiInputProcessor;
+import bms.player.beatoraja.skin.SkinHeader;
+import bms.player.beatoraja.skin.SkinType;
+import space.earlygrey.shapedrawer.ShapeDrawer;
 
 /**
  * キーコンフィグ画面
@@ -48,7 +53,7 @@ public class KeyConfiguration extends MainState {
 	private static final String[][] KEYS = {
 			{ "1 KEY", "2 KEY", "3 KEY", "4 KEY", "5 KEY", "F-SCR", "R-SCR","DIFF FILTER", "START", "SELECT" },
 			{ "1 KEY", "2 KEY", "3 KEY", "4 KEY", "5 KEY", "6 KEY", "7 KEY", "F-SCR", "R-SCR","DIFF FILTER", "START", "SELECT" },
-			{ "1 KEY", "2 KEY", "3 KEY", "4 KEY", "5 KEY", "6 KEY", "7 KEY", "8 KEY", "9 KEY","DIFF FILTER", "START", "SELECT" },
+			{ "1 KEY", "2 KEY", "3 KEY", "4 KEY", "5 KEY", "6 KEY", "7 KEY", "8 KEY", "9 KEY","DIFF FILTER", "SHUTTER", "START", "SELECT" },
 			{ "1P-1 KEY", "1P-2 KEY", "1P-3 KEY", "1P-4 KEY", "1P-5 KEY", "1P-F-SCR",
 				"1P-R-SCR", "2P-1 KEY", "2P-2 KEY", "2P-3 KEY", "2P-4 KEY", "2P-5 KEY", 
 				"2P-F-SCR", "2P-R-SCR","DIFF FILTER", "START", "SELECT" },
@@ -414,6 +419,8 @@ public class KeyConfiguration extends MainState {
 			return keyboardConfig.getSelect();
 		} else if (index == -3) { // 【追加】
 			return keyboardConfig.getDiffFilter();
+		} else if (index == -4) { // 【追加】
+			return keyboardConfig.getShutter();
 		}
 		return 0;
 	}
@@ -431,6 +438,8 @@ public class KeyConfiguration extends MainState {
 			keyboardConfig.setSelect(keyboard.getLastPressedKey());
 		} else if (index == -3) { // 【追加】
 			keyboardConfig.setDiffFilter(keyboard.getLastPressedKey());
+		} else if (index == -4) { // 【追加】
+			keyboardConfig.setShutter(keyboard.getLastPressedKey());
 		}
 	}
 
@@ -444,6 +453,8 @@ public class KeyConfiguration extends MainState {
 			keyString = keyboardConfig.getMouseScratchConfig().getSelectString();
 		} else if (index == -3) { // 【追加】
 			keyString = keyboardConfig.getMouseScratchConfig().getDiffFilterString();
+		} else if (index == -4) { // 【追加】
+			keyString = keyboardConfig.getMouseScratchConfig().getShutterString();
 		}
 		if (keyString == null) {
 			return defaultKeyString;
@@ -463,7 +474,9 @@ public class KeyConfiguration extends MainState {
 			keyboardConfig.getMouseScratchConfig().setSelect(lastMouseScratch);
 		} else if (index == -3) { // 【追加】
 			keyboardConfig.getMouseScratchConfig().setDiffFilter(lastMouseScratch);
-		}
+		} else if (index == -4) {
+			keyboardConfig.getMouseScratchConfig().setShutter(lastMouseScratch);
+		} 
 	}
 
 	private int getControllerKeyAssign(int device, int index) {
@@ -475,7 +488,9 @@ public class KeyConfiguration extends MainState {
 			return controllerConfigs[device].getSelect();
 		} else if (index == -3) { // 【追加】
 			return controllerConfigs[device].getDiffFilter();
-		}
+		} else if (index == -4) { // 【追加】
+			return controllerConfigs[device].getShutter();
+		} 
 		return 0;
 	}
 

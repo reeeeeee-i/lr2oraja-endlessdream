@@ -3,10 +3,10 @@ package bms.player.beatoraja;
 import java.util.Arrays;
 
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.math.MathUtils;
 
 import bms.model.Mode;
 import bms.player.beatoraja.input.BMControllerInputProcessor.BMKeys;
-import com.badlogic.gdx.math.MathUtils;
 
 /**
  * プレイコンフィグ。モード毎に保持するべき値についてはこちらに格納する
@@ -191,6 +191,9 @@ public class PlayModeConfig {
         // 【追加】 難易度フィルターキー
         private int diffFilter = Keys.NUM_0;
 
+        // 【追加】　　シャッターON/OFFキー
+        private int shutter = Keys.NUM_1;
+
         private int duration = 16;
 
         public KeyboardConfig() {
@@ -221,6 +224,9 @@ public class PlayModeConfig {
         // 【追加】 Getter/Setter
         public int getDiffFilter() { return diffFilter; }
         public void setDiffFilter(int diffFilter) { this.diffFilter = diffFilter; }
+
+        public int getShutter() { return shutter; }
+        public void setShutter(int shutter) { this.shutter = shutter; }
 
         public void setKeyAssign(Mode mode, boolean enable) {
             switch (mode) {
@@ -266,6 +272,7 @@ public class PlayModeConfig {
             select = Keys.W;
             // 【追加】 初期化
             diffFilter = Keys.NUM_0;
+            shutter = Keys.NUM_1;
         }
 
         public void setKeyAssign(int[] keys) {
@@ -312,14 +319,24 @@ public class PlayModeConfig {
         // 【追加】
         private int diffFilter = -1;
 
+        private int shutter = -1;
+
         // 【追加】 Getter/Setter
         public int getDiffFilter() { return diffFilter; }
         public void setDiffFilter(int diffFilter) { this.diffFilter = diffFilter; }
+
+        public int getShutter() { return shutter; }
+        public void setShutter(int shutter) { this.shutter = shutter; }
 
         // 【追加】 キー名称取得用ヘルパー
         public String getDiffFilterString() {
             if (diffFilter == -1) return null;
             return MOUSESCRATCH_STRING[diffFilter];
+        }
+
+        public String getShutterString() {
+            if (shutter == -1) return null;
+            return MOUSESCRATCH_STRING[shutter];
         }
 
         /**
@@ -379,6 +396,7 @@ public class PlayModeConfig {
             select = -1;
             // 【追加】
             diffFilter = -1;
+            shutter = -1;
         }
 
         public int[] getKeyAssign() {
@@ -475,9 +493,14 @@ public class PlayModeConfig {
         // 【追加】
         private int diffFilter = -1;
 
+        private int shutter = -1;
+
         // 【追加】 Getter/Setter
         public int getDiffFilter() { return diffFilter; }
         public void setDiffFilter(int diffFilter) { this.diffFilter = diffFilter; }
+
+        public int getShutter() { return shutter; }
+        public void setShutter(int shutter) { this.shutter = shutter; }
 
         private int duration = 16;
         /**
@@ -601,6 +624,7 @@ public class PlayModeConfig {
             select = con.select;
             // 【追加】
             diffFilter = -1;
+            shutter = -1;
         }
 
         public void setKeyAssign(int[] keys) {
@@ -704,11 +728,15 @@ public class PlayModeConfig {
 
         // 【追加】
         private Input diffFilter;
+        private Input shutter;
 
         // 【追加】 Getter/Setter
         public Input getDiffFilter() { return diffFilter; }
         public void setDiffFilter(Input input) { diffFilter = input; }
 
+        public Input getShutter() { return shutter; }
+        public void setShutter(Input input) { shutter = input; }
+        
         public Input[] getKeys() {
             return keys;
         }
