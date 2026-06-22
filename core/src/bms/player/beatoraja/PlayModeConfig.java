@@ -38,9 +38,16 @@ public class PlayModeConfig {
     public PlayModeConfig(Mode mode) {
         boolean midi = (mode == Mode.KEYBOARD_24K || mode == Mode.KEYBOARD_24K_DOUBLE);
         this.keyboard = new KeyboardConfig(mode, !midi);
-        controller = new ControllerConfig[mode.player];
-        for(int i = 0;i < controller.length;i++) {
-            controller[i] = new ControllerConfig(mode, i, false);
+        if (mode != Mode.POPN_5K && mode != Mode.POPN_9K) {
+            controller = new ControllerConfig[mode.player];
+            for(int i = 0;i < controller.length;i++) {
+                controller[i] = new ControllerConfig(mode, i, false);
+            }
+        } else {
+            controller = new ControllerConfig[2];
+            for(int i = 0;i < controller.length;i++) {
+                controller[i] = new ControllerConfig(mode, i, false);
+            }
         }
         this.midi = new MidiConfig(mode, midi);
     }
