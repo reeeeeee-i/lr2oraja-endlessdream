@@ -85,6 +85,8 @@ public class CourseResult extends AbstractResult {
 		if (ir.length > 0 && resource.getPlayMode().mode == BMSPlayerMode.Mode.PLAY) {
 			state = STATE_IR_PROCESSING;
 			
+			irSendStatus.clear();
+
 			boolean uln = false;
 			for(BMSModel model : resource.getCourseBMSModels()) {
 				if(model.containsUndefinedLongNote()) {
