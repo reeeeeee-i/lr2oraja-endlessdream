@@ -203,6 +203,11 @@ public class LaneRenderer {
 		resetHispeed(basebpm);
 	}
 
+	// 【追加】レーンカバーの値のみを変更するメソッド
+	public void setLaneCoverNoChangeHispeed(float lanecover) {
+		playconfig.setLanecover(lanecover < 0 ? 0 : (lanecover > 1 ? 1 : lanecover));
+	}
+
 	public void setEnableLanecover(boolean b) {
 		playconfig.setEnablelanecover(b);
 	}
