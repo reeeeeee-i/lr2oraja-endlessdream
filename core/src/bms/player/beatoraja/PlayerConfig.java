@@ -503,6 +503,10 @@ public final class PlayerConfig {
 	}
 
 	public PlayModeConfig getMode9() {
+		if(mode9 == null || mode9.getController().length < 2) {
+			mode9 = new PlayModeConfig(Mode.POPN_9K);
+			logger.warn("mode9のPlayConfigを再構成");
+		}
 		return mode9;
 	}
 
