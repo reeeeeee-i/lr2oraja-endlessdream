@@ -186,7 +186,7 @@ public final class ControlInputProcessor {
 					|| (player.resource.getPlayerConfig().isWindowHold() && player.timer.isTimerOn(TIMER_PLAY) && !player.isNoteEnd())) {
 				if ((autoplay.mode == BMSPlayerMode.Mode.PLAY || autoplay.mode == BMSPlayerMode.Mode.PRACTICE) && startpressed) {
 					processStart.run();
-					// PMS で pmsSwitchLaneCover が有効な場合のみに、1回の START 押下でレーンカバーを切替
+					// PMS で pmsSwitchLaneCover が有効な場合のみに、1度の START 押下でレーンカバーを切替
 					if (pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K) && !pmsLaneCoverchanged) {
 						lanerender.setEnableLanecover(!lanerender.isEnableLanecover());
 						pmsLaneCoverchanged = true;
@@ -197,7 +197,7 @@ public final class ControlInputProcessor {
 						pmsLaneCoverchanged = false;
 					}
 				}				
-				if (!pmsSwitchLaneCover) {
+				if (!(pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K))) {
 					// show-hide lane cover by double-press START
 					if (!startpressed) {
 						long stime = System.currentTimeMillis();
