@@ -131,7 +131,8 @@ public class PlayConfigurationView implements Initializable {
 	private Spinner<Double> hispeedmargin;
 	@FXML
 	private CheckBox hispeedautoadjust;
-
+	@FXML
+	private CheckBox pmsSwitchLaneCover;
 	@FXML
 	private ComboBox<Integer> scoreop;
 	@FXML
@@ -583,6 +584,7 @@ public class PlayConfigurationView implements Initializable {
 		markprocessednote.setSelected(player.isMarkprocessednote());
 		extranotedepth.getValueFactory().setValue(player.getExtranoteDepth());
 		dxMode.setSelected(player.isDxMode());
+		pmsSwitchLaneCover.setSelected(player.isPmsSwitchLaneCover());
 
 		autosavereplay1.getSelectionModel().select(player.getAutoSaveReplay()[0]);
 		autosavereplay2.getSelectionModel().select(player.getAutoSaveReplay()[1]);
@@ -680,6 +682,7 @@ public class PlayConfigurationView implements Initializable {
 		player.setNotesDisplayTimingAutoAdjust(notesdisplaytimingautoadjust.isSelected());
 		
 		player.setDxMode(dxMode.isSelected());
+		player.setPmsSwitchLaneCover(pmsSwitchLaneCover.isSelected());
 
 		player.setBpmguide(bpmguide.isSelected());
 		player.setGaugeAutoShift(gaugeautoshift.getValue());

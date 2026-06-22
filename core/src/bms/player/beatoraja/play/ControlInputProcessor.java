@@ -4,6 +4,7 @@ import static bms.player.beatoraja.skin.SkinProperty.*;
 
 import java.util.Arrays;
 
+import bms.model.Mode;
 import bms.player.beatoraja.PlayConfig;
 import bms.player.beatoraja.BMSPlayerMode;
 import bms.player.beatoraja.input.BMSPlayerInputProcessor;
@@ -19,6 +20,7 @@ public final class ControlInputProcessor {
 	private final BMSPlayer player;
 
 	private boolean[] hschanged;
+	private boolean pmsLaneCoverchanged = false;
 	private long startpressedtime;
 	private long selectpressedtime;
 	private boolean startpressed = false;
@@ -47,6 +49,10 @@ public final class ControlInputProcessor {
 
 	private boolean hispeedAutoAdjust;
 
+	// 【追加】
+	private Mode playMode;
+	private boolean pmsSwitchLaneCover;
+
 	public ControlInputProcessor(BMSPlayer player, BMSPlayerMode autoplay) {
 		this.player = player;
 		this.autoplay = autoplay;
@@ -54,10 +60,12 @@ public final class ControlInputProcessor {
 		Arrays.fill(hschanged, true);
 
 		final PlayConfig playConfig = player.resource.getPlayerConfig().getPlayConfig(player.getMode()).getPlayconfig();
+		playMode = player.getMode();		
 		coverChangeMarginLow = playConfig.getLanecovermarginlow();
 		coverChangeMarginHigh = playConfig.getLanecovermarginhigh();
 		coverSpeedSwitchDuration = playConfig.getLanecoverswitchduration();
 		hispeedAutoAdjust = playConfig.isEnableHispeedAutoAdjust();
+		pmsSwitchLaneCover = player.main.getPlayerConfig().isPmsSwitchLaneCover();
 
 		exitPressDuration = player.main.getPlayerConfig().getExitPressDuration();
 
@@ -76,17 +84,23 @@ public final class ControlInputProcessor {
 			final LaneRenderer lanerender = player.getLanerender();
 			final BMSPlayerInputProcessor input = player.main.getInputProcessor();
 			// change hi speed by START + Keys
+
 			for(int i = 0; i < keybinds.length; i++) {
 				final boolean keystate = input.getKeyState(i);
 				switch(keybinds[i]) {
 					case -1 -> {
 						if(keystate && !hschanged[i]) {
-							lanerender.changeHispeed(false);
+							// pmsSwitchLaneCoverが有効で、かつプレイモードがPOPN_5KまたはPOPN_9Kで、かつプレイ中場合は、ハイスピードを変更しない (事故防止)
+							if (!(pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K) && player.getState() == BMSPlayer.STATE_PLAY)) {
+								lanerender.changeHispeed(false);
+							}
 						}
 					}
 					case 1 -> {
 						if(keystate && !hschanged[i]) {
-							lanerender.changeHispeed(true);
+							if (!(pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K) && player.getState() == BMSPlayer.STATE_PLAY)) {
+								lanerender.changeHispeed(true);
+							}
 						}
 					}
 					case 2 -> changeCoverValue(i, true);
@@ -172,17 +186,27 @@ public final class ControlInputProcessor {
 					|| (player.resource.getPlayerConfig().isWindowHold() && player.timer.isTimerOn(TIMER_PLAY) && !player.isNoteEnd())) {
 				if ((autoplay.mode == BMSPlayerMode.Mode.PLAY || autoplay.mode == BMSPlayerMode.Mode.PRACTICE) && startpressed) {
 					processStart.run();
+					// PMS で pmsSwitchLaneCover が有効な場合のみに、1回の START 押下でレーンカバーを切替
+					if (pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K) && !pmsLaneCoverchanged) {
+						lanerender.setEnableLanecover(!lanerender.isEnableLanecover());
+						pmsLaneCoverchanged = true;
+					}
 				} else if ((autoplay.mode == BMSPlayerMode.Mode.PLAY || autoplay.mode == BMSPlayerMode.Mode.PRACTICE) && !startpressed) {
 					Arrays.fill(hschanged, true);
-				}
-				// show-hide lane cover by double-press START
-				if (!startpressed) {
-					long stime = System.currentTimeMillis();
-					if (stime < startpressedtime + 500) {
-						lanerender.setEnableLanecover(!lanerender.isEnableLanecover());
-						startpressedtime = 0;
-					} else {
-						startpressedtime = stime;
+					if (pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K) && pmsLaneCoverchanged) {
+						pmsLaneCoverchanged = false;
+					}
+				}				
+				if (!pmsSwitchLaneCover) {
+					// show-hide lane cover by double-press START
+					if (!startpressed) {
+						long stime = System.currentTimeMillis();
+						if (stime < startpressedtime + 500) {
+							lanerender.setEnableLanecover(!lanerender.isEnableLanecover());
+							startpressedtime = 0;
+						} else {
+							startpressedtime = stime;
+						}
 					}
 				}
 				startpressed = true;
@@ -255,18 +279,24 @@ public final class ControlInputProcessor {
 	 */
 	private void setCoverValue(float value) {
 		final LaneRenderer lanerender = player.getLanerender();
-		if(lanerender.isEnableLanecover() || (!lanerender.isEnableLift() && !lanerender.isEnableHidden())) {
-			lanerender.setLanecover(lanerender.getLanecover() + value);
 
+		// 【追加】pmsSwitchLaneCoverが有効で、かつプレイモードがPOPN_5KまたはPOPN_9Kで、かつプレイ中の場合は、レーンカバーの値変更に伴うハイスピード変更は行わない (事故防止)
+		if(lanerender.isEnableLanecover() || (!lanerender.isEnableLift() && !lanerender.isEnableHidden())) {
+			if (pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K) && player.getState() == BMSPlayer.STATE_PLAY) {
+				lanerender.setLaneCoverNoChangeHispeed(lanerender.getLanecover() + value);
+			} else {
+				lanerender.setLanecover(lanerender.getLanecover() + value);
+			}
 		} else if(lanerender.isEnableHidden()) {
 			lanerender.setHiddenCover(lanerender.getHiddenCover() - value);
-		}
-		else if(lanerender.isEnableLift() && isChangeLift) {
+		} else if(lanerender.isEnableLift() && isChangeLift) {
 			lanerender.setLiftRegion(lanerender.getLiftRegion() - value);
 		}
-
-		if (hispeedAutoAdjust && lanerender.getNowBPM() > 0) {
-			lanerender.resetHispeed(lanerender.getNowBPM());
+				
+		if (!(pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K) && player.getState() == BMSPlayer.STATE_PLAY)) {
+			if (hispeedAutoAdjust && lanerender.getNowBPM() > 0) {
+				lanerender.resetHispeed(lanerender.getNowBPM());
+			}
 		}
 	}
 
@@ -276,7 +306,8 @@ public final class ControlInputProcessor {
 
 		// 【修正】 自動調整(皿チョン)が無効、かつカバー類が全て無効の場合のみ、ハイスピードを手動変更する
 		// (!hispeedAutoAdjust を追加することで、皿チョン使用時はこのブロックをスキップし、従来通りの動作をさせる)
-		if (!hispeedAutoAdjust && !lanerender.isEnableLanecover() && !lanerender.isEnableLift() && !lanerender.isEnableHidden()) {
+		if ((!hispeedAutoAdjust && !lanerender.isEnableLanecover() && !lanerender.isEnableLift() && !lanerender.isEnableHidden())
+			|| (pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K) && !lanerender.isEnableLanecover() && !lanerender.isEnableLift() && !lanerender.isEnableHidden())) {
 			if(input.isAnalogInput(key)) {
 				// 【修正】 アナログ入力（スクラッチ）の場合は、変化量 × 0.01 を加算する
 				int dTicks = input.getAnalogDiffAndReset(key, 200) * (up ? 1 : -1);

@@ -153,6 +153,12 @@ public final class PlayerConfig {
 	private boolean dxMode = false;
 
 	/**
+	 * PMS における Lane Cover 切り替え方法
+	 * false: START 2回で切り替え (通常) true: START 1回で切り替え
+	 */
+	private boolean pmsSwitchLaneCover = false;
+
+	/**
 	 * H-RANDOM連打しきい値BPM
 	 */
 	private int hranThresholdBPM = 120;
@@ -404,6 +410,14 @@ public final class PlayerConfig {
 
 	public void setDxMode(boolean dxMode) {
 		this.dxMode = dxMode;
+	}
+
+	public boolean isPmsSwitchLaneCover() {
+		return pmsSwitchLaneCover;
+	}
+
+	public void setPmsSwitchLaneCover(boolean pmsSwitchLaneCover) {
+		this.pmsSwitchLaneCover = pmsSwitchLaneCover;
 	}
 
 	public PlayModeConfig getPlayConfig(Mode modeId) {
