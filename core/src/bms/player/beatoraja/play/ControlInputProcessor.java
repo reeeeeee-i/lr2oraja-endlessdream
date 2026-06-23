@@ -20,7 +20,6 @@ public final class ControlInputProcessor {
 	private final BMSPlayer player;
 
 	private boolean[] hschanged;
-	private boolean pmsLaneCoverchanged = false;
 	private long startpressedtime;
 	private long selectpressedtime;
 	private boolean startpressed = false;
@@ -186,23 +185,26 @@ public final class ControlInputProcessor {
 					|| (player.resource.getPlayerConfig().isWindowHold() && player.timer.isTimerOn(TIMER_PLAY) && !player.isNoteEnd())) {
 				if ((autoplay.mode == BMSPlayerMode.Mode.PLAY || autoplay.mode == BMSPlayerMode.Mode.PRACTICE) && startpressed) {
 					processStart.run();
-					// PMS で pmsSwitchLaneCover が有効な場合のみに、1度の START 押下でレーンカバーを切替
-					if (pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K) && !pmsLaneCoverchanged) {
-						lanerender.setEnableLanecover(!lanerender.isEnableLanecover());
-						pmsLaneCoverchanged = true;
-					}
 				} else if ((autoplay.mode == BMSPlayerMode.Mode.PLAY || autoplay.mode == BMSPlayerMode.Mode.PRACTICE) && !startpressed) {
 					Arrays.fill(hschanged, true);
-					if (pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K) && pmsLaneCoverchanged) {
-						pmsLaneCoverchanged = false;
-					}
 				}				
-				if (!(pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K))) {
-					// show-hide lane cover by double-press START
-					if (!startpressed) {
+				// show-hide lane cover
+				if (!startpressed) {
+					if (pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K)) {
+						// pmsonly by single-press START
+						lanerender.setEnableLanecover(!lanerender.isEnableLanecover());
+						// レーンカバー切替後に再計算されるように修正。
+						if (player.getState() != BMSPlayer.STATE_PLAY) {
+							lanerender.resetHispeed(lanerender.getNowBPM());
+						}
+					} else {
+						// by double-press START
 						long stime = System.currentTimeMillis();
 						if (stime < startpressedtime + 500) {
 							lanerender.setEnableLanecover(!lanerender.isEnableLanecover());
+							if (player.getState() != BMSPlayer.STATE_PLAY) {
+								lanerender.resetHispeed(lanerender.getNowBPM());
+							}
 							startpressedtime = 0;
 						} else {
 							startpressedtime = stime;
