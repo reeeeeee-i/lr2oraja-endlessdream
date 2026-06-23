@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.text.ParseException;
 
+import bms.player.beatoraja.PlayModeConfig.ControllerConfig;
 import bms.player.beatoraja.system.RobustFile;
 import bms.player.beatoraja.exceptions.PlayerConfigException;
 import bms.player.beatoraja.ir.IRConnectionManager;
