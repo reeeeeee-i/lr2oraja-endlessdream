@@ -77,6 +77,18 @@ public final class PlayerConfig {
 			, "IR_RANK_1", "IR_RANK_5", "IR_RANK_10", "IR_RANK_20", "IR_RANK_30", "IR_RANK_40", "IR_RANK_50"
 			, "IR_RANKRATE_5", "IR_RANKRATE_10", "IR_RANKRATE_15", "IR_RANKRATE_20", "IR_RANKRATE_25", "IR_RANKRATE_30", "IR_RANKRATE_35", "IR_RANKRATE_40", "IR_RANKRATE_45","IR_RANKRATE_50"
 			,"RIVAL_RANK_1","RIVAL_RANK_2","RIVAL_RANK_3","RIVAL_NEXT_1","RIVAL_NEXT_2","RIVAL_NEXT_3"};
+	/**
+	 * 判定タイミング
+	 */
+	private int judgetiming = 0;
+	
+	public static final int JUDGETIMING_MAX = 500;
+	public static final int JUDGETIMING_MIN = -500;
+
+	/**
+	 * 判定タイミングをPlayerConfigからPlayConfigに移行したか
+	 */
+	private boolean migrationJudgetiming = false;
 	
 	/**
 	 * ディスプレイ表示タイミング自動調整
@@ -292,6 +304,27 @@ public final class PlayerConfig {
 
 	public void setRandom(int random) {
 		this.random = random;
+	}
+
+	public int getJudgetiming() {
+		return judgetiming;
+	}
+
+	public void setJudgetiming(int judgetiming) {
+		this.judgetiming = judgetiming;
+	}
+
+	public void migrationJudgetiming() {
+		if (this.migrationJudgetiming == false) {
+			this.getPlayConfig(Mode.BEAT_5K).getPlayconfig().setJudgetiming(getJudgetiming());
+			this.getPlayConfig(Mode.BEAT_7K).getPlayconfig().setJudgetiming(getJudgetiming());
+			this.getPlayConfig(Mode.BEAT_10K).getPlayconfig().setJudgetiming(getJudgetiming());
+			this.getPlayConfig(Mode.BEAT_14K).getPlayconfig().setJudgetiming(getJudgetiming());
+			this.getPlayConfig(Mode.POPN_9K).getPlayconfig().setJudgetiming(getJudgetiming());
+			this.getPlayConfig(Mode.KEYBOARD_24K).getPlayconfig().setJudgetiming(getJudgetiming());
+			this.getPlayConfig(Mode.KEYBOARD_24K_DOUBLE).getPlayconfig().setJudgetiming(getJudgetiming());
+		}
+		this.migrationJudgetiming = true;
 	}
 
 	public boolean isNotesDisplayTimingAutoAdjust() {

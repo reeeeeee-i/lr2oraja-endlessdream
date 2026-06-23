@@ -545,6 +545,8 @@ public class PlayConfigurationView implements Initializable {
         }
         playername.setText(player.getName());
 
+		player.migrationJudgetiming();
+
 		videoController.updatePlayer(player);
 		musicselectController.updatePlayer(player);
 
