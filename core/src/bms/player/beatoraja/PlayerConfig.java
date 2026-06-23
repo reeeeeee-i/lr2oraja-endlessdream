@@ -488,9 +488,15 @@ public final class PlayerConfig {
 	}
 
 	public PlayModeConfig getMode9() {
-		if(mode9 == null || mode9.getController().length < 2) {
+		if (mode9 == null) {
 			mode9 = new PlayModeConfig(Mode.POPN_9K);
-			logger.warn("mode9のPlayConfigを再構成");
+		} else if (mode9.getController().length < 2) {
+			ControllerConfig[] oldControllers = mode9.getController();
+			ControllerConfig[] newControllers = new ControllerConfig[2];
+			newControllers[0] = oldControllers.length > 0 ? oldControllers[0] : new ControllerConfig(Mode.POPN_9K, 0, false);
+			newControllers[1] = new ControllerConfig(Mode.POPN_9K, 1, false);
+			mode9.setController(newControllers);
+			logger.warn("mode9のControllerを拡張");
 		}
 		return mode9;
 	}
