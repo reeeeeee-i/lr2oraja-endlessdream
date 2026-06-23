@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import bms.model.Mode;
 import bms.player.beatoraja.PlayConfig;
+import bms.player.beatoraja.PlayerConfig;
 import bms.player.beatoraja.BMSPlayerMode;
 import bms.player.beatoraja.input.BMSPlayerInputProcessor;
 import bms.player.beatoraja.input.KeyBoardInputProcesseor.ControlKeys;
@@ -64,7 +65,7 @@ public final class ControlInputProcessor {
 		coverChangeMarginHigh = playConfig.getLanecovermarginhigh();
 		coverSpeedSwitchDuration = playConfig.getLanecoverswitchduration();
 		hispeedAutoAdjust = playConfig.isEnableHispeedAutoAdjust();
-		pmsSwitchLaneCover = player.main.getPlayerConfig().isPmsSwitchLaneCover();
+		pmsSwitchLaneCover = player.main.getPlayerConfig().isPmsSwitchLaneCoverWithMode(playMode);
 
 		exitPressDuration = player.main.getPlayerConfig().getExitPressDuration();
 
@@ -90,14 +91,14 @@ public final class ControlInputProcessor {
 					case -1 -> {
 						if(keystate && !hschanged[i]) {
 							// pmsSwitchLaneCoverが有効で、かつプレイモードがPOPN_5KまたはPOPN_9Kで、かつプレイ中場合は、ハイスピードを変更しない (事故防止)
-							if (!(pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K) && player.getState() == BMSPlayer.STATE_PLAY)) {
+							if (!(pmsSwitchLaneCover && player.getState() == BMSPlayer.STATE_PLAY)) {
 								lanerender.changeHispeed(false);
 							}
 						}
 					}
 					case 1 -> {
 						if(keystate && !hschanged[i]) {
-							if (!(pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K) && player.getState() == BMSPlayer.STATE_PLAY)) {
+							if (!(pmsSwitchLaneCover && player.getState() == BMSPlayer.STATE_PLAY)) {
 								lanerender.changeHispeed(true);
 							}
 						}
@@ -190,7 +191,7 @@ public final class ControlInputProcessor {
 				}				
 				// show-hide lane cover
 				if (!startpressed) {
-					if (pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K)) {
+					if (pmsSwitchLaneCover) {
 						// pmsonly by single-press START
 						lanerender.setEnableLanecover(!lanerender.isEnableLanecover());
 						// レーンカバー切替後に再計算されるように修正。
@@ -284,7 +285,7 @@ public final class ControlInputProcessor {
 
 		// 【追加】pmsSwitchLaneCoverが有効で、かつプレイモードがPOPN_5KまたはPOPN_9Kで、かつプレイ中の場合は、レーンカバーの値変更に伴うハイスピード変更は行わない (事故防止)
 		if(lanerender.isEnableLanecover() || (!lanerender.isEnableLift() && !lanerender.isEnableHidden())) {
-			if (pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K) && player.getState() == BMSPlayer.STATE_PLAY) {
+			if (pmsSwitchLaneCover && player.getState() == BMSPlayer.STATE_PLAY) {
 				lanerender.setLaneCoverNoChangeHispeed(lanerender.getLanecover() + value);
 			} else {
 				lanerender.setLanecover(lanerender.getLanecover() + value);
@@ -295,7 +296,7 @@ public final class ControlInputProcessor {
 			lanerender.setLiftRegion(lanerender.getLiftRegion() - value);
 		}
 				
-		if (!(pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K) && player.getState() == BMSPlayer.STATE_PLAY)) {
+		if (!(pmsSwitchLaneCover && player.getState() == BMSPlayer.STATE_PLAY)) {
 			if (hispeedAutoAdjust && lanerender.getNowBPM() > 0) {
 				lanerender.resetHispeed(lanerender.getNowBPM());
 			}
@@ -309,7 +310,7 @@ public final class ControlInputProcessor {
 		// 【修正】 自動調整(皿チョン)が無効、かつカバー類が全て無効の場合のみ、ハイスピードを手動変更する
 		// (!hispeedAutoAdjust を追加することで、皿チョン使用時はこのブロックをスキップし、従来通りの動作をさせる)
 		if ((!hispeedAutoAdjust && !lanerender.isEnableLanecover() && !lanerender.isEnableLift() && !lanerender.isEnableHidden())
-			|| (pmsSwitchLaneCover && (playMode == Mode.POPN_5K || playMode == Mode.POPN_9K) && !lanerender.isEnableLanecover() && !lanerender.isEnableLift() && !lanerender.isEnableHidden())) {
+			|| (pmsSwitchLaneCover && !lanerender.isEnableLanecover() && !lanerender.isEnableLift() && !lanerender.isEnableHidden())) {
 			if(input.isAnalogInput(key)) {
 				// 【修正】 アナログ入力（スクラッチ）の場合は、変化量 × 0.01 を加算する
 				int dTicks = input.getAnalogDiffAndReset(key, 200) * (up ? 1 : -1);
