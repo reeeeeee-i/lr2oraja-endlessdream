@@ -420,6 +420,11 @@ public final class PlayerConfig {
 		this.pmsSwitchLaneCover = pmsSwitchLaneCover;
 	}
 
+	// PmsSwitchLaneCoverはPMSに限り有効とするため、呼び出す場合はモードの判定を伴うようにする。
+	public boolean isPmsSwitchLaneCoverWithMode(Mode modeId) {
+		return (pmsSwitchLaneCover && (modeId == Mode.POPN_5K || modeId == Mode.POPN_9K) ? true : false);
+	}
+
 	public PlayModeConfig getPlayConfig(Mode modeId) {
 		switch (modeId != null ? modeId : Mode.BEAT_7K) {
 		case BEAT_5K:
