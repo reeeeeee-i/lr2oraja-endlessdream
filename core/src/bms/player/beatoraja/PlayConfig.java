@@ -1,5 +1,6 @@
 package bms.player.beatoraja;
 
+import bms.player.beatoraja.PlayerConfig;
 import bms.player.beatoraja.play.JudgeAlgorithm;
 import com.badlogic.gdx.math.MathUtils;
 
